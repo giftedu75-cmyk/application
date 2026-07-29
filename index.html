@@ -4,9 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>피시 펀딩</title>
-  <link rel="stylesheet" href="styles.css?v=15">
+  <link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
+  <section id="onboarding" class="onboarding" aria-label="피시 펀딩 사용 안내">
+    <button id="tutorial-skip" class="tutorial-skip" onclick="event.stopImmediatePropagation(); window.fishTutorialSkip(); return false;">건너뛰기</button>
+    <div class="tutorial-visual" id="tutorial-visual"><span class="tutorial-sun">☀️</span><span class="tutorial-boat">⛵</span><span class="tutorial-wave">〰〰〰</span><span class="tutorial-mascot">🐟</span></div>
+    <div class="tutorial-copy"><span id="tutorial-step" class="tutorial-step">01</span><h1 id="tutorial-title">바다의 하루를<br>가까이에서 만나보세요</h1><p id="tutorial-description">오늘의 날씨와 조업 현황을 보고,<br>신선한 바다 이야기를 함께 나눠요.</p></div>
+    <div class="tutorial-bottom"><div class="tutorial-dots" id="tutorial-dots"><i class="active"></i><i></i><i></i></div><button id="tutorial-next" class="tutorial-next" onclick="event.stopImmediatePropagation(); window.fishTutorialNext(); return false;">다음 <span>→</span></button></div>
+  </section>
   <main class="app">
     <header class="app-header">
       <button id="home-button" class="brand" aria-label="피시 펀딩 홈"><img class="app-logo" src="assets/fish-funding-logo.png" alt="피시 펀딩"><span>피시 펀딩</span><b class="mascot" aria-label="고등어 마스코트">🐟</b></button>
@@ -16,6 +22,40 @@
   </main>
   <div id="modal-layer" class="modal-layer" hidden></div>
   <div id="toast" class="toast" role="status"></div>
-  <script src="app.js?v=27"></script>
+  <script src="app.js?v=43"></script>
+  <script>
+    (() => {
+      const overlay = document.querySelector('#onboarding');
+      if (!overlay || localStorage.getItem('fishFunding.tutorialDone') === 'true') return;
+      const slides = [
+        ['01', '바다의 하루를<br>가까이에서 만나보세요', '오늘의 날씨와 조업 현황을 보고,<br>신선한 바다 이야기를 함께 나눠요.', '🛥️', '🐬', '☀️'],
+        ['02', '마음에 드는 어선을<br>응원해 보세요', '조업비를 응원하고 어선의 타임라인을<br>따라가며 바다의 과정을 확인해요.', '⚓', '💙', '🌊'],
+        ['03', '신선함은 가장 빠르게<br>식탁으로 보내요', '오늘 잡은 수산물을 산지에서 받아보고,<br>커뮤니티에서 바다 이야기를 이어가요.', '🧺', '🐟', '✨']
+      ];
+      let current = 0;
+      const next = document.querySelector('#tutorial-next');
+      const skip = document.querySelector('#tutorial-skip');
+      const render = () => { const s = slides[current]; overlay.className = `onboarding step-${current + 1}`; document.querySelector('#tutorial-step').textContent = s[0]; document.querySelector('#tutorial-title').innerHTML = s[1]; document.querySelector('#tutorial-description').innerHTML = s[2]; document.querySelector('.tutorial-boat').textContent = s[3]; document.querySelector('.tutorial-mascot').textContent = s[4]; document.querySelector('.tutorial-sun').textContent = s[5]; document.querySelectorAll('#tutorial-dots i').forEach((dot, i) => dot.classList.toggle('active', i === current)); next.innerHTML = current === 2 ? '피시 펀딩 시작 <span>→</span>' : '다음 <span>→</span>'; };
+      const close = () => { localStorage.setItem('fishFunding.tutorialDone', 'true'); overlay.classList.add('hidden'); };
+      next.addEventListener('click', (event) => { event.stopImmediatePropagation(); if (current === 2) close(); else { current++; render(); } }, true);
+      skip.addEventListener('click', (event) => { event.stopImmediatePropagation(); close(); }, true);
+      render();
+    })();
+  </script>
+  <script>
+    (() => {
+      const overlay = document.getElementById('onboarding');
+      const slides = [
+        ['01', '\ubc14\ub2e4\uc758 \ud558\ub8e8\ub97c<br>\uac00\uae4c\uc774\uc5d0\uc11c \ub9cc\ub098\ubcf4\uc138\uc694', '\uc624\ub298\uc758 \ub0a0\uc528\uc640 \uc870\uc5c5 \ud604\ud669\uc744 \ubcf4\uace0,<br>\uc2e0\uc120\ud55c \ubc14\ub2e4 \uc774\uc57c\uae30\ub97c \ud568\uaed8 \ub098\ub220\uc694.', '\ud6db', '\ud83d\udc2c', '\u2600\ufe0f'],
+        ['02', '\ub9c8\uc74c\uc5d0 \ub4dc\ub294 \uc5b4\uc120\uc744<br>\uc751\uc6d0\ud574 \ubcf4\uc138\uc694', '\uc870\uc5c5\ube44\ub97c \uc751\uc6d0\ud558\uace0 \uc5b4\uc120\uc758 \ud0c0\uc784\ub77c\uc778\uc744<br>\ub530\ub77c\uac00\uba70 \ubc14\ub2e4\uc758 \uacfc\uc815\uc744 \ud655\uc778\ud574\uc694.', '\u2693\ufe0f', '\ud83d\udc99', '\ud83c\udf0a'],
+        ['03', '\uc2e0\uc120\ud568\uc740 \uac00\uc7a5 \ube60\ub974\uac8c<br>\uc2dd\ud0c1\uc73c\ub85c \ubcf4\ub0b4\uc694', '\uc624\ub298 \uc7a1\uc740 \uc218\uc0b0\ubb3c\uc744 \uc0b0\uc9c0\uc5d0\uc11c \ubc1b\uc544\ubcf4\uace0,<br>\ucee4\ubba4\ub2c8\ud2f0\uc5d0\uc11c \ubc14\ub2e4 \uc774\uc57c\uae30\ub97c \uc774\uc5b4\uac00\uc694.', '\ud83e\uddfa', '\ud83d\udc1f', '\u2728']
+      ];
+      let step = 0;
+      const render = () => { if (!overlay) return; const s = slides[step]; overlay.className = `onboarding step-${step + 1}`; document.getElementById('tutorial-step').textContent = s[0]; document.getElementById('tutorial-title').innerHTML = s[1]; document.getElementById('tutorial-description').innerHTML = s[2]; document.querySelector('.tutorial-boat').textContent = s[3]; document.querySelector('.tutorial-mascot').textContent = s[4]; document.querySelector('.tutorial-sun').textContent = s[5]; document.querySelectorAll('#tutorial-dots i').forEach((dot, i) => dot.classList.toggle('active', i === step)); document.getElementById('tutorial-next').innerHTML = step === 2 ? '\ud53c\uc2dc \ud380\ub529 \uc2dc\uc791 <span>\u2192</span>' : '\ub2e4\uc74c <span>\u2192</span>'; };
+      window.fishTutorialNext = () => { if (step === 2) window.fishTutorialSkip(); else { step += 1; render(); } };
+      window.fishTutorialSkip = () => { localStorage.setItem('fishFunding.tutorialDone', 'true'); overlay?.classList.add('hidden'); };
+      render();
+    })();
+  </script>
 </body>
 </html>
