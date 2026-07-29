@@ -94,3 +94,4 @@ injectFundingPromo();
 function makeFundingPromoStatic(){screen.querySelectorAll('button.funding-promo').forEach(button=>{const promo=document.createElement('aside');promo.className='funding-promo';promo.setAttribute('aria-label','피시 펀딩 안내');promo.innerHTML=button.innerHTML;button.replaceWith(promo)})}
 new MutationObserver(makeFundingPromoStatic).observe(screen,{childList:true,subtree:true});
 makeFundingPromoStatic();
+(()=>{const data=db(),harbor=data.boats.find(boat=>boat.id==='safe-harbor');if(harbor){harbor.logs??=[];if(!harbor.logs.length)harbor.logs.push({date:'2026. 07. 29.',title:'응원금으로 안전한 선박 수리를 진행합니다',text:'응원자분들이 보내주신 마음 덕분에 갑판과 장비를 정비하고 있습니다.',photos:[]});harbor.logs[0].photos=['assets/feed-repair-boat.png']}save(data);ensureCommunityExamples()})();
